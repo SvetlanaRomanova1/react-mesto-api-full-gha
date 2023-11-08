@@ -1,0 +1,6 @@
+.profile__avatar-wrap {
+  transition: 0.3s linear;
+  background: url('../../../image/editing-button.svg') center/26px no-repeat;
+  display: flex;
+  justify-content: center;
+}

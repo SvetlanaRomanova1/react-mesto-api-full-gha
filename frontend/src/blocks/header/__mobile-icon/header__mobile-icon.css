@@ -1,0 +1,8 @@
+.header__mobile-icon{
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    margin: 6px 0;
+    display: flex;
+    border: none;
+}

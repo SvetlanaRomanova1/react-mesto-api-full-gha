@@ -1,0 +1,17 @@
+.header__wrapper-mobile {
+    display: none;
+    padding: 40px 0 40px 0;
+}
+
+@media (max-width: 640px) {
+    .header__wrapper {
+        display: none;
+    }
+
+    .header__wrapper-mobile {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+}

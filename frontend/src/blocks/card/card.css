@@ -1,0 +1,11 @@
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
+  max-width: 17.625rem;
+  text-align: center;
+  background-color: #ffffff;
+  border-radius: 0.625rem;
+  grid-template-rows: 17.625rem 5rem;
+  display: grid;
+  align-items: center;
+  position: relative;
+}

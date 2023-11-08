@@ -1,0 +1,11 @@
+.header__wrapper {
+    display: flex;
+    justify-content: end;
+    gap: 24px;
+}
+
+@media (max-width: 880px) {
+    .header__wrapper {
+        margin: 0 24px 0 0;
+    }
+}

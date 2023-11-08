@@ -1,0 +1,18 @@
+.header__mobile-button {
+    background: transparent;
+    border: unset;
+    float: right;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: none;
+}
+
+.header__mobile-button:hover {
+    opacity: 0.5;
+}
+
+@media (max-width: 640px) {
+    .header__mobile-button {
+        display: block;
+    }
+}

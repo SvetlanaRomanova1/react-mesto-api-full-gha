@@ -1,0 +1,23 @@
+.header {
+  padding: 2.875rem 0 2.5rem 0;
+  border-bottom: 1px solid rgba(84, 84, 84, 0.7);
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+
+@media (max-width: 640px){
+  .header {
+    border-top: 1px solid rgba(84, 84, 84, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .header {
+    padding: 1.75rem 0 2rem;
+    width: 100%;
+  }
+}

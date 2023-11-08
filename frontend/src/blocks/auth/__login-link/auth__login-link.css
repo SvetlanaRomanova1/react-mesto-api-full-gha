@@ -1,0 +1,15 @@
+.auth__login-link{
+    color: #FFF;
+    text-decoration: none;
+    margin-left: 5px;
+    text-align: center;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    transition: all 0.3s ease;
+}
+
+.auth__login-link:hover{
+    opacity: 0.6;
+}
