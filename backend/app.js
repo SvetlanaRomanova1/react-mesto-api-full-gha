@@ -3,10 +3,11 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const { celebrate, Joi, errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { PORT } = require('./utils/config');
-const app = express();
 
+const app = express();
 
 // Подключение к MongoDB
 const mongoURI = 'mongodb://localhost:27017/mestodb';
@@ -21,7 +22,6 @@ db.once('open', () => {
   console.log('Connected to MongoDB');
 });
 
-const { celebrate, Joi, errors } = require('celebrate');
 const auth = require('./middlewares/auth');
 const { createUser } = require('./controllers/users');
 
@@ -34,6 +34,7 @@ app.use(errorLogger); // подключаем логгер ошибок
 // Использование роутов пользователей
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
+
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
