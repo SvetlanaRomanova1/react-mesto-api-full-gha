@@ -77,7 +77,6 @@ module.exports.createUser = (req, res, next) => {
 module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
-
   const TOKEN_EXPIRATION = '7d';
 
   try {

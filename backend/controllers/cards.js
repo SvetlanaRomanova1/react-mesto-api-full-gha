@@ -23,7 +23,7 @@ module.exports.createCard = (req, res, next) => {
   }
 
   return Card.create({ name, link, owner })
-    .then((card) => res.status(201).send( card ))
+    .then((card) => res.status(201).send(card))
     .catch(next);
 };
 
@@ -60,7 +60,7 @@ module.exports.deleteCardId = (req, res, next) => {
 module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $addToSet:  { likes: req.user._id } }, // убрать _id из массива
+    { $addToSet: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
     .orFail(() => {
