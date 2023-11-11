@@ -29,7 +29,6 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger); // подключаем логгер запросов
-app.use(errorLogger); // подключаем логгер ошибок
 
 // Использование роутов пользователей
 app.use('/users', auth, require('./routes/users'));
@@ -61,7 +60,7 @@ app.post(
   }),
   createUser,
 );
-
+app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors());
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {

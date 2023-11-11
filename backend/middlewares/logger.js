@@ -11,7 +11,7 @@ const requestLogger = expressWinston.logger({
 
 // логгер ошибок
 const errorLogger = expressWinston.errorLogger({
-  level: 'error',
+  level: 'info',
   transports: [
     new winston.transports.File({
       filename: 'error.log',
