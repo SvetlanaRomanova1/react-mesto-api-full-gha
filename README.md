@@ -5,12 +5,12 @@
   
 Пожалуйста, прикрепите в это описание ссылку на сайт, размещенный на Яндекс.Облаке.
 
-Адрес репозитория: https://github.com/...
+Адрес репозитория: [https://github.com/...](https://github.com/SvetlanaRomanova1/react-mesto-api-full-gha)
 
 ## Ссылки на проект
 
-IP-адрес x.x.x.x
+IP-адрес 158.160.23.223
 
-Frontend https://...
+Frontend [158.160.23.223](https://sromanova.students.nomoredomainsrocks.ru/page)https://sromanova.students.nomoredomainsrocks.ru/page
 
-Backend https://...
+Backend [https://...](https://api.sromanova.students.nomoredomainsmonster.ru/users)https://api.sromanova.students.nomoredomainsmonster.ru/users
