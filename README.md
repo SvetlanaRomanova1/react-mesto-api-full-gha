@@ -11,6 +11,6 @@
 
 IP-адрес 158.160.23.223
 
-Frontend [158.160.23.223](https://sromanova.students.nomoredomainsrocks.ru/page)https://sromanova.students.nomoredomainsrocks.ru/page
+Frontend https://sromanova.students.nomoredomainsrocks.ru/page
 
-Backend [https://...](https://api.sromanova.students.nomoredomainsmonster.ru/users)https://api.sromanova.students.nomoredomainsmonster.ru/users
+Backend https://api.sromanova.students.nomoredomainsmonster.ru/users
