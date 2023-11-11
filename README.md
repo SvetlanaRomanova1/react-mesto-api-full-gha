@@ -9,7 +9,7 @@
 
 ## Ссылки на проект
 
-IP-адрес 158.160.23.223
+IP 158.160.23.223
 
 Frontend https://sromanova.students.nomoredomainsrocks.ru/page
 
