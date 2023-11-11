@@ -6,6 +6,7 @@ const NotFoundError = require('../errors/not-found-error');
 const BadRequestError = require('../errors/bad-request-error');
 const Conflict = require('../errors/conflict-error');
 const ServerError = require('../errors/server-error');
+const { JWT_SECRET } = require('../utils/config');
 const AuthorisationError = require('../errors/unauthorized-error');
 
 // Контроллер для получения всех пользователей
@@ -76,7 +77,7 @@ module.exports.createUser = (req, res, next) => {
 module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
-  const SECRET_KEY = 'your-secret-key';
+
   const TOKEN_EXPIRATION = '7d';
 
   try {
@@ -90,7 +91,7 @@ module.exports.login = async (req, res, next) => {
 
     if (result) {
       // Если пароль верный, создаем и отправляем JWT
-      const token = jwt.sign({ _id: user._id }, SECRET_KEY, { expiresIn: TOKEN_EXPIRATION });
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
       res.cookie('jwt', token, { httpOnly: true });
       res.status(200).send({ message: 'Аутентификация успешна.', token });
       // const token = jwt.sign(

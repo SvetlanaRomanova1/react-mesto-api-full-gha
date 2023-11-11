@@ -1,9 +1,12 @@
+require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { PORT } = require('./utils/config');
 const app = express();
+
 
 // Подключение к MongoDB
 const mongoURI = 'mongodb://localhost:27017/mestodb';
@@ -31,7 +34,11 @@ app.use(errorLogger); // подключаем логгер ошибок
 // Использование роутов пользователей
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
-
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 // Обработчики для регистрации и входа (аутентификации)
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -74,9 +81,4 @@ app.use((req, res) => {
 });
 
 // наш централизованный обработчик
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT);
