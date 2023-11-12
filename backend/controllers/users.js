@@ -166,7 +166,7 @@ module.exports.updateAvatar = (req, res, next) => {
     throw new BadRequestError('Переданы некорректные данные');
   }
 
-  User.findByIdAndUpdate(userId, { $set: { avatar } }, { new: true, runValidators: true})
+  User.findByIdAndUpdate(userId, { $set: { avatar } }, { new: true, runValidators: true })
     .then((updatedUser) => {
       if (!updatedUser) {
         throw new NotFoundError('Нет пользователя с таким id');
