@@ -62,12 +62,14 @@ app.post(
   }),
   createUser,
 );
+
 app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors());
 
 app.use(router.use('*', auth, (req, res, next) => {
   next(new NotFoundError('Запрашиваемый ресурс не найден'));
 }));
+
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
