@@ -73,32 +73,29 @@ module.exports.createUser = (req, res, next) => {
 };
 
 // Контроллер для аутентификации пользователя и выдачи JWT-токена
-
-module.exports.login = async (req, res, next) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-
   const TOKEN_EXPIRATION = '7d';
 
-  try {
-    const user = await User.findOne({ email }).select('+password');
+  User.findOne({ email })
+    .select('+password')
+    .then((user) => {
+      if (!user) {
+        throw new AuthorisationError('Аутентификация не удалась. Пользователь не найден.');
+      }
 
-    if (!user) {
-      throw new AuthorisationError('Аутентификация не удалась. Пользователь не найден.');
-    }
-
-    const result = await bcrypt.compare(password, user.password);
-
-    if (result) {
-      // Если пароль верный, создаем и отправляем JWT
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
-      res.cookie('jwt', token, { httpOnly: true });
-      res.status(200).send({ message: 'Аутентификация успешна.', token });
-    } else {
-      throw new AuthorisationError('Аутентификация не удалась. Неверный пароль.');
-    }
-  } catch (error) {
-    next(error);
-  }
+      return bcrypt.compare(password, user.password);
+    })
+    .then((user) => {
+      if (user) {
+        const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
+        res.cookie('jwt', token, { httpOnly: true });
+        res.status(200).send({ message: 'Аутентификация успешна.', token });
+      } else {
+        throw new AuthorisationError('Аутентификация не удалась. Неверный пароль.');
+      }
+    })
+    .catch((error) => next(error));
 };
 
 // Контроллер для обновления профиля пользователя

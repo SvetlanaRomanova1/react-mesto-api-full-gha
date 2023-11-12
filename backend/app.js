@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -28,7 +27,6 @@ const NotFoundError = require('./errors/not-found-error');
 
 app.use(cookieParser());
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger); // подключаем логгер запросов
 
 // Использование роутов пользователей
@@ -63,6 +61,9 @@ app.post(
 );
 app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors());
+app.use('*', auth, (req, res, next) => {
+  next(new NotFoundError('Запрашиваемый ресурс не найден'));
+});
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
@@ -75,10 +76,6 @@ app.use((err, req, res, next) => {
         ? 'На сервере произошла ошибка'
         : message,
     });
-});
-
-app.use((req, res, next) => {
-  next(new NotFoundError('Not Found'));
 });
 
 app.listen(PORT);
