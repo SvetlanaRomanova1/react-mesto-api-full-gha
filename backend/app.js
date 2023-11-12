@@ -40,6 +40,7 @@ app.get('/crash-test', () => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
+
 // Обработчики для регистрации и входа (аутентификации)
 app.post('/signin', celebrate({
   body: Joi.object().keys({
