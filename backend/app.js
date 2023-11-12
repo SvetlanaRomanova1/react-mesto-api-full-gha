@@ -3,6 +3,8 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
+
+const router = express.Router();
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { PORT } = require('./utils/config');
 
@@ -59,11 +61,12 @@ app.post(
   }),
   createUser,
 );
-app.use((req, res, next) => {
-  next(new NotFoundError('Запрашиваемый ресурс не найден'));
-});
 app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors());
+
+app.use(router.use('*', auth, (req, res, next) => {
+  next(new NotFoundError('Запрашиваемый ресурс не найден'));
+}));
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
