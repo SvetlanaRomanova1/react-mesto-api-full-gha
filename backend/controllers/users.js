@@ -93,13 +93,9 @@ module.exports.login = async (req, res, next) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
       res.cookie('jwt', token, { httpOnly: true });
       res.status(200).send({ message: 'Аутентификация успешна.', token });
-      // const token = jwt.sign(
-      //   { _id: user._id },
-      //   SECRET_KEY,
-      //   { expiresIn: TOKEN_EXPIRATION },
-      // );
+    } else {
+      throw new AuthorisationError('Аутентификация не удалась. Неверный пароль.');
     }
-    throw new AuthorisationError('Аутентификация не удалась. Неверный пароль.');
   } catch (error) {
     next(error);
   }
@@ -111,15 +107,6 @@ module.exports.updateProfile = (req, res, next) => {
   const userId = req.user._id;
 
   const allowedFields = ['name', 'about'];
-
-  if (!allowedFields.every(((item) => req.body[item]))) {
-    throw new BadRequestError('Переданы некорректные данные');
-  }
-
-  if (req.body.name && req.body.name.length >= 30) {
-    throw new BadRequestError('Переданы некорректные данные');
-  }
-
   const updatedFields = {};
 
   allowedFields.forEach((field) => {
@@ -129,17 +116,24 @@ module.exports.updateProfile = (req, res, next) => {
   });
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
-    throw new NotFoundError('Нет пользователя с таким id');
+    throw new BadRequestError('Невалидный идентификатор пользователя');
   }
 
-  User.findByIdAndUpdate(userId, { $set: updatedFields }, { new: true })
+  User.findByIdAndUpdate(userId, { $set: updatedFields }, { new: true, runValidators: true })
     .then((updatedUser) => {
       if (!updatedUser) {
         throw new NotFoundError('Нет пользователя с таким id');
       }
       return res.status(200).send({ data: updatedUser });
     })
-    .catch(next);
+    .catch((error) => {
+      // Обработка ошибок валидации
+      if (error.name === 'ValidationError') {
+        next(new BadRequestError('Введены некорректные данные'));
+      } else {
+        next(error);
+      }
+    });
 };
 
 // Контроллер для получения информации о текущем пользователе
@@ -166,22 +160,23 @@ module.exports.getCurrentUser = (req, res, next) => {
 module.exports.updateAvatar = (req, res, next) => {
   const userId = req.user._id;
 
-  const allowedFields = ['avatar'];
-
-  const updatedFields = {};
-  allowedFields.forEach((field) => {
-    if (req.body[field]) {
-      updatedFields[field] = req.body[field];
-    }
-  });
-
-  if (Object.keys(updatedFields).length === 0) {
+  // Проверка наличия и валидности поля avatar в теле запроса
+  const { avatar } = req.body;
+  if (!avatar || typeof avatar !== 'string') {
     throw new BadRequestError('Переданы некорректные данные');
   }
 
-  User.findByIdAndUpdate(userId, { $set: updatedFields }, { new: true })
+  User.findByIdAndUpdate(userId, { $set: { avatar } }, { new: true, runValidators: true})
     .then((updatedUser) => {
+      if (!updatedUser) {
+        throw new NotFoundError('Нет пользователя с таким id');
+      }
       res.status(200).send({ data: updatedUser });
     })
-    .catch(next);
+    .catch((error) => {
+      if (error.name === 'CastError') {
+        next(new BadRequestError('Переданы некорректные данные для обновления аватара'));
+      }
+      next(error);
+    });
 };

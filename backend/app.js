@@ -26,7 +26,7 @@ const auth = require('./middlewares/auth');
 const { createUser } = require('./controllers/users');
 
 app.use(cookieParser());
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger); // подключаем логгер запросов
 
@@ -75,9 +75,11 @@ app.use((err, req, res, next) => {
         : message,
     });
 });
-// Middleware for handling undefined routes
-app.use((req, res) => {
-  res.status(404).json({ message: 'Not Found' });
+
+app.use((req, res, next) => {
+  const error = new Error('Not Found');
+  error.status = 404;
+  next(error);
 });
 
 // наш централизованный обработчик
