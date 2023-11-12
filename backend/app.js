@@ -59,11 +59,11 @@ app.post(
   }),
   createUser,
 );
-app.use(errorLogger); // подключаем логгер ошибок
-app.use(errors());
-app.use('*', auth, (req, res, next) => {
+app.use((req, res, next) => {
   next(new NotFoundError('Запрашиваемый ресурс не найден'));
 });
+app.use(errorLogger); // подключаем логгер ошибок
+app.use(errors());
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
