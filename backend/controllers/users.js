@@ -104,14 +104,9 @@ module.exports.login = (req, res, next) => {
 module.exports.updateProfile = (req, res, next) => {
   const userId = req.user._id;
 
-  const allowedFields = ['name', 'about'];
   const updatedFields = {};
-
-  allowedFields.forEach((field) => {
-    if (req.body[field]) {
-      updatedFields[field] = req.body[field];
-    }
-  });
+  updatedFields.name = req.body.name;
+  updatedFields.about = req.body.about;
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     throw new BadRequestError('Невалидный идентификатор пользователя');
@@ -157,12 +152,7 @@ module.exports.getCurrentUser = (req, res, next) => {
 // eslint-disable-next-line consistent-return
 module.exports.updateAvatar = (req, res, next) => {
   const userId = req.user._id;
-
-  // Проверка наличия и валидности поля avatar в теле запроса
   const { avatar } = req.body;
-  if (!avatar || typeof avatar !== 'string') {
-    throw new BadRequestError('Переданы некорректные данные');
-  }
 
   User.findByIdAndUpdate(userId, { $set: { avatar } }, { new: true, runValidators: true })
     .then((updatedUser) => {
@@ -172,9 +162,10 @@ module.exports.updateAvatar = (req, res, next) => {
       res.status(200).send({ data: updatedUser });
     })
     .catch((error) => {
-      if (error.name === 'CastError') {
+      if (error.name === 'CastError' || error.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные для обновления аватара'));
+      } else {
+        next(error);
       }
-      next(error);
     });
 };
