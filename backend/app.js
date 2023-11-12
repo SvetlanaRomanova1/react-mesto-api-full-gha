@@ -1,8 +1,13 @@
+require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const { celebrate, Joi, errors } = require('celebrate');
+
+const router = express.Router();
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { PORT } = require('./utils/config');
+
 const app = express();
 
 // Подключение к MongoDB
@@ -18,19 +23,23 @@ db.once('open', () => {
   console.log('Connected to MongoDB');
 });
 
-const { celebrate, Joi, errors } = require('celebrate');
 const auth = require('./middlewares/auth');
 const { createUser } = require('./controllers/users');
+const NotFoundError = require('./errors/not-found-error');
 
 app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(requestLogger); // подключаем логгер запросов
-app.use(errorLogger); // подключаем логгер ошибок
 
 // Использование роутов пользователей
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 
 // Обработчики для регистрации и входа (аутентификации)
 app.post('/signin', celebrate({
@@ -53,8 +62,12 @@ app.post(
   }),
   createUser,
 );
-
+app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors());
+
+app.use(router.use('*', auth, (req, res, next) => {
+  next(new NotFoundError('Запрашиваемый ресурс не найден'));
+}));
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
@@ -68,15 +81,5 @@ app.use((err, req, res, next) => {
         : message,
     });
 });
-// Middleware for handling undefined routes
-app.use((req, res) => {
-  res.status(404).json({ message: 'Not Found' });
-});
 
-// наш централизованный обработчик
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT);
