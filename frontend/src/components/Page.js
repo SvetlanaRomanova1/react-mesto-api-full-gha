@@ -34,7 +34,6 @@ export default function Page({setCurrentUser}) {
             .then(userInfo => {
                 setCurrentUser({
                     ...userInfo,
-                    isLoggedIn: true
                 });
             })
             .catch(error => {

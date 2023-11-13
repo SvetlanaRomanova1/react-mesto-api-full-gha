@@ -16,7 +16,7 @@ function Login({setIsSuccess, setIsPopupOpen, setIsAuthenticated}) {
             .then((res) => {
                 if (res.token) {
                     setIsAuthenticated(true);
-                    localStorage.setItem('token', res.token);
+                    localStorage.setItem('is-login', "true");
                     setEmail("");
                     setPassword("");
                     navigate("/page");

@@ -108,32 +108,15 @@ class Api {
             body: JSON.stringify(body)
         }).then(this._checkResponse);
     }
-    userInfo(jwt){
+    userInfo(){
         return fetch(`${this.baseUrl}/users/me`,{
             method: 'GET',
             headers: {
                 ...this.headers,
-                "Authorization" : `Bearer ${jwt}`
             }
         }).then(this._checkResponse);
     }
 }
-
-// // Создание экземпляра api
-// const api = new Api({
-//     baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-72',
-//     headers: {
-//         authorization: 'feda086f-6f7a-4a92-a7c8-dfe4532414fe',
-//         'Content-Type': 'application/json',
-//     },
-// });
-//
-// export const api2 = new Api({
-//     baseUrl: 'https://auth.nomoreparties.co.',
-//     headers: {
-//         'Content-Type': 'application/json'
-//     },
-// })
 
 const api = new Api({
     baseUrl: '/api',

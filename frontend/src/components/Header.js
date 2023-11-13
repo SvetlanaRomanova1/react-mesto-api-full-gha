@@ -1,7 +1,6 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {Link, useLocation} from 'react-router-dom';
 import logoHeader from '../image/logo-image.svg';
-import {CurrentUserContext} from '../constexts/CurrentUserContext';
 import closeButton from '../image/close-Icon.svg'
 
 function HeaderControls({email, onSinkOut, className = '', isMenuOpen}) {
@@ -45,10 +44,9 @@ function HeaderMobileButton({toggleMenu, isMenuOpen}) {
     )
 }
 
-function Header({email, setIsAuthenticated}) {
+function Header({email, setIsAuthenticated, isAuthenticated}) {
     const location = useLocation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const currentUser = useContext(CurrentUserContext);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -57,7 +55,7 @@ function Header({email, setIsAuthenticated}) {
     const onSinkOut = () => {
         setIsMenuOpen(false);
         setIsAuthenticated(false);
-        localStorage.setItem('token', '');
+        localStorage.setItem('is-login', '');
     }
 
     const isPage = location.pathname === '/page';
@@ -76,8 +74,7 @@ function Header({email, setIsAuthenticated}) {
             <header className="header">
                 <img alt="Логотип место" className="header__logo" src={logoHeader}/>
                 <HeaderMobileButton isMenuOpen={isMenuOpen} toggleMenu={toggleMenu}/>
-                {isPage && currentUser.isLoggedIn && <HeaderControls email={email} onSinkOut={onSinkOut} isMenuOpen />}
-                {/*{<HeaderControls email={email} onSinkOut={onSinkOut} isMenuOpen />}*/}
+                {isPage && isAuthenticated && <HeaderControls email={email} onSinkOut={onSinkOut} isMenuOpen />}
                 {isSignUp && <Link className="header__auth-link" to="/sign-in">Войти</Link>}
                 {isSignIn && <Link className="header__auth-link" to="/sign-up">Регистрация</Link>}
             </header>
